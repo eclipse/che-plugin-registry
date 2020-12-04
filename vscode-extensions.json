@@ -417,6 +417,16 @@
           "repository": "https://github.com/che-dockerfiles/che-sidecar-protobuf"
         }
       }
+    },
+    {
+      "repository": "https://github.com/fwcd/vscode-kotlin/",
+      "revision": "0.2.18",
+      "sidecar": {
+        "image": "quay.io/bluesman/che-sidecar-maven:latest",
+        "source": {
+          "repository": "https://github.com/blues-man/che-sidecar-maven"
+        }
+      }
     }
   ]
 }
