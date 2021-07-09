@@ -1,0 +1,64 @@
+#
+# Copyright (c) 2021 Red Hat, Inc.
+# This program and the accompanying materials are made
+# available under the terms of the Eclipse Public License 2.0
+# which is available at https://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+
+name: VSCode Extension's Tests
+
+on:
+  push:
+    paths:
+      - 'che-theia-plugins.yaml'
+jobs:
+  test-extension:
+    runs-on: ubuntu-20.04
+    env:
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          ref:  ${{ github.event.pull_request.head.sha }}
+      - name: Get changes
+        run: |
+          ./.ci/get-changed-plugin.sh
+      - uses: actions/setup-node@v1
+        if: env.EXTENSION_REPO != ''
+        with:
+          node-version: '12'
+      - name: Build image
+        if: env.EXTENSION_REPO != ''
+        run: |
+          export SKIP_FORMAT=true
+          export SKIP_LINT=true
+          export SKIP_TEST=true
+          docker pull quay.io/eclipse/che-plugin-registry:nightly
+          BUILDER=docker ./build.sh --tag vscode-extension 
+          # save locally built image
+          docker save -o docker-image.tar quay.io/eclipse/che-plugin-registry:vscode-extension
+      - name: Start minikube
+        if: env.EXTENSION_REPO != ''
+        uses: che-incubator/setup-minikube-action@next
+      - name: Load image
+        if: env.EXTENSION_REPO != ''
+        run: |
+          # load image in the docker registry
+          eval $(minikube docker-env)
+          docker load --input=docker-image.tar
+          # display images
+          docker images
+      - name: Deploy Eclipse Che
+        if: env.EXTENSION_REPO != ''
+        uses: che-incubator/che-deploy-action@next
+        with:
+          # use custom image built by this PR
+          plugin-registry-image: quay.io/eclipse/che-plugin-registry:vscode-extension
+      - name: Run VSCode extension's tests
+        if: env.EXTENSION_REPO != ''
+        run: |
+          ./.ci/run-extension-tests.sh

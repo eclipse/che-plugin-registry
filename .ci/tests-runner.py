@@ -20,11 +20,15 @@ from selenium.webdriver.common.by import By
 options = Options()
 options.log.level = "trace"
 options.headless = True
+options.add_argument('--disable-web-security')
+options.add_argument('--allow-running-insecure-content')
+options.add_argument('--ignore-certificate-errors')
 
 NEW_USER="admin"
 
 browser = webdriver.Firefox(options=options, executable_path="/usr/local/bin/geckodriver")
 wait = WebDriverWait(browser, 30)
+print (sys.argv[1])
 browser.get(sys.argv[1])
 
 wait.until(EC.title_contains('Log in'))
@@ -41,6 +45,11 @@ login_btn_elem.click()
 browser.implicitly_wait(20)
 browser.get(sys.argv[1])
 
-#Waiting for theia itself to be loaded so that tests will be run
-wait.until(EC.frame_to_be_available_and_switch_to_it((By.ID, 'ide-application-iframe')))
-wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="theia-app-shell"]')))
+try:
+    #Waiting for theia itself to be loaded so that tests will be run
+    wait.until(EC.frame_to_be_available_and_switch_to_it((By.ID, 'ide-iframe')))
+    wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="theia-app-shell"]')))
+    wait.until(EC.presence_of_element_located((By.XPATH, '//*[@id="/projects:/projects/test.log"]')))
+    print("----- Workspace is ready -----")
+except Exception as e:
+    print("Loading took too much time!", e)

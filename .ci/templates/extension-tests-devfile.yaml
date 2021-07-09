@@ -1,0 +1,16 @@
+apiVersion: 1.0.0
+metadata:
+  name: extension-test-sample
+components:
+  - mountSources: true
+    memoryLimit: 3Gi
+    type: dockerimage
+    image: 'quay.io/eclipse/che-theia-dev:next'
+    alias: che-dev
+  - type: chePlugin
+    reference: 'https://raw.githubusercontent.com/svor/che-vscode-extension-tests/main/meta.yaml'
+  - type: chePlugin
+    id: @
+  - id: eclipse/che-theia/next
+    memoryLimit: 1024Mi
+    type: cheEditor
