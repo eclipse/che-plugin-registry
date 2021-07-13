@@ -58,6 +58,7 @@ createCustomResourcesFile() {
 spec:
   auth:
     updateAdminPassword: false
+    openShiftoAuth: false
   server:
     pluginRegistryImage: ${PLUGIN_REGISTRY_IMAGE}
     pluginRegistryPullPolicy: IfNotPresent
@@ -81,6 +82,8 @@ deployChe() {
 patchTestPodConfig(){
   TEST_USERSTORY="$1"
   TEST_POD_NAME="$2"
+  E2E_OPENSHIFT_TOKEN="$(oc whoami -t)"
+
   # obtain the basic test pod config
   cat .ci/openshift-ci/plugins-test-pod.yaml > plugins-test-pod.yaml
 
@@ -89,6 +92,7 @@ patchTestPodConfig(){
   sed -i "s@CHE_URL@${ECLIPSE_CHE_URL}@g" plugins-test-pod.yaml
   sed -i "s@TEST_USERSTORY@${TEST_USERSTORY}@g" plugins-test-pod.yaml
   sed -i "s@POD_NAME@${TEST_POD_NAME}@g" plugins-test-pod.yaml
+  # sed -i "s@OCP_TOKEN@${E2E_OPENSHIFT_TOKEN}@g" plugins-test-pod.yaml
 
   cat plugins-test-pod.yaml
 }
