@@ -768,3 +768,7 @@ plugins:
     repository:
       url: 'https://github.com/BroadcomMFD/cobol-control-flow'
     extension: https://open-vsx.org/api/BroadcomMFD/ccf/0.4.0/file/BroadcomMFD.ccf-0.4.0.vsix
+  - repository:
+      url: 'https://github.com/sgwozdz/jenkinsfile-support'
+      revision: '1.2.0'
+    extension: 'https://disaster37.github.io/vscode-plugins/recode4dev.jenkinsfile-1.2.0.vsix'
