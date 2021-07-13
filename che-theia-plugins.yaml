@@ -768,3 +768,7 @@ plugins:
     repository:
       url: 'https://github.com/BroadcomMFD/cobol-control-flow'
     extension: https://open-vsx.org/api/BroadcomMFD/ccf/0.4.0/file/BroadcomMFD.ccf-0.4.0.vsix
+  - repository:
+      url: 'https://github.com/wholroyd/vscode-hcl'
+      revision: '0.0.5'
+    extension: 'https://disaster37.github.io/vscode-plugins/wholroyd.HCL-0.0.5.vsix'
